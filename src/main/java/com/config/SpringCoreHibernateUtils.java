@@ -1,28 +1,22 @@
-package com.utils;
+package com.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.hibernate.HibernateError;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import javax.annotation.*;
 import javax.sql.DataSource;
 
 @Configuration
 public class SpringCoreHibernateUtils 
 {
+	
 	ResourceBundle rb = ResourceBundle.getBundle("resource");
 	
+	//dataSource Bean  -- Used as a reference by bean of type LocalSessionFactory
 	@Bean
 	public DataSource dataSource() 
 	{
@@ -34,6 +28,7 @@ public class SpringCoreHibernateUtils
 		return dataSource;
 	}
 
+	//sessionFactory Bean
 	@Bean
 	public LocalSessionFactoryBean sessionFactory() 
 	{
@@ -41,8 +36,6 @@ public class SpringCoreHibernateUtils
 		sessionFactory.setDataSource(dataSource());
 		sessionFactory.setHibernateProperties(hibernateProperties());
 		sessionFactory.setPackagesToScan("com.pojos");
-		// sessionFactory.setPackagesToScan(new String[] {
-		// "com.baeldung.persistence.model" });
 		return sessionFactory;
 	}
 
@@ -54,7 +47,25 @@ public class SpringCoreHibernateUtils
 		htm.setSessionFactory(sessionFactory);
 		return htm;
 	}
-	*/
+	
+	@Bean
+    @Autowired
+    public HibernateTemplate getHibernateTemplate(SessionFactory sessionFactory)
+    {
+        HibernateTemplate hibernateTemplate = new HibernateTemplate(sessionFactory);
+        return hibernateTemplate;
+    }
+	
+	@Bean
+    @Autowired 
+    public HibernateTransactionManager transactionManager(SessionFactory sessionFactory)
+    {
+        HibernateTransactionManager htm = new HibernateTransactionManager();
+        htm.setSessionFactory(sessionFactory);
+        return htm;
+    }*/
+	
+	//Hibernate Properties -- used by bean of type LocalSessionFactory
 	public Properties hibernateProperties() 
 	{
 		final Properties hibernateProperties = new Properties();
@@ -62,9 +73,8 @@ public class SpringCoreHibernateUtils
 		hibernateProperties.setProperty("hibernate.dialect", rb.getString("hibernate.dialect"));
 		hibernateProperties.setProperty("hibernate.show_sql", rb.getString("hibernate.show_sql"));
 		hibernateProperties.setProperty("hibernate.format_sql", rb.getString("hibernate.format_sql"));
+		
 		return hibernateProperties;
 	}
 	
-
-
 }

@@ -1,18 +1,27 @@
 package com.service;
 
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.dao.CustomerDaoImpl;
+import com.pojos.Customer;
+
+
+@Service
+@Transactional(readOnly=false)
 public class CustomerServiceImpl 
 {
 	@Autowired
-	private SessionFactory sf;
+	private CustomerDaoImpl cdao;
+		
 	public CustomerServiceImpl()
 	{
-		System.out.println("SF created"+sf);
+		System.out.println("I too got noticed");
 	}
-	public static void main(String[] args) 
+	public Customer registerCustomer(Customer c)
 	{
-		new CustomerServiceImpl();
+		return cdao.registerCustomer(c);
 	}
+	
 }
