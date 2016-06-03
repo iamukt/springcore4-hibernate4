@@ -9,7 +9,7 @@ import com.pojos.Customer;
 
 
 @Service
-@Transactional(readOnly=false)
+@Transactional
 public class CustomerServiceImpl 
 {
 	@Autowired
